@@ -10,6 +10,7 @@ import Signup from './page/Signup';
 import Home from './page/Home';
 import Setting from './page/Setting';
 import { Profile } from './utils/type';
+import About from './page/About';
 
 function App() {
   const [token, setToken] = useRecoilState(tokenState)
@@ -67,6 +68,7 @@ function App() {
           <Route path="/signup" render={() => (
             loggedIn ? <Redirect to="/" /> : <Signup />
           )} exact />
+          <Route path="/about" component={About} />
         </Switch>
       </div> </>}
     </BrowserRouter>

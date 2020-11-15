@@ -1,7 +1,6 @@
 body {
   margin: 0;
-  font-family: "Ivar Display", "Source Sans Pro", "Helvetica Neue", Helvetica,
-    Arial, sans-serif !important;
+  font-family: "Playfair Display", serif !important;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   color: #22262a !important;
@@ -35,6 +34,7 @@ body {
   -webkit-box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.02),
     0 2px 8px rgba(0, 0, 0, 0.08) !important;
   box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.02), 0 2px 8px rgba(0, 0, 0, 0.08) !important;
+  margin-bottom: 24px;
 }
 
 .AuthFooter {
@@ -45,4 +45,15 @@ body {
 
 th {
   border-top: none !important;
+}
+
+.AboutCardBottom {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.AboutCardBottom b {
+  font-size: 1.5rem;
 }

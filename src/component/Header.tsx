@@ -1,7 +1,7 @@
 
 import React from 'react'
 import {DropdownItem, DropdownMenu, DropdownToggle, Nav, Navbar, NavbarBrand, UncontrolledDropdown} from 'reactstrap'
-import { useRecoilState } from 'recoil'
+import { useRecoilValue } from 'recoil'
 import { isLoggedInState, } from '../store'
 import { FcMenu } from "react-icons/fc";
 import { Link } from 'react-router-dom';
@@ -11,7 +11,7 @@ interface Props {
   }
 
 const Header = ({logOut}: Props) => {
-    const [loggedIn, setLoggedIn] = useRecoilState(isLoggedInState)
+    const loggedIn = useRecoilValue(isLoggedInState)
 
     return (
         <Navbar className="header" fixed="top">
@@ -31,7 +31,10 @@ const Header = ({logOut}: Props) => {
                         Home
                     </DropdownItem>
                     <DropdownItem tag={Link} to="/settings">
-                        Account
+                        Settings
+                    </DropdownItem>
+                    <DropdownItem tag={Link} to="/about">
+                        About
                     </DropdownItem>
                     <DropdownItem tag={Link} to="/login" onClick={logOut}>
                         Logout
