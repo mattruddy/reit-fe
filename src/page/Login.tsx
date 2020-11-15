@@ -34,7 +34,7 @@ const Login = () => {
                     </div>
                     <AuthForm onSubmit={auth} authType="Log in" />
                     <div className="AuthFooter">
-                        Don't have an account? <Link to="/signup"> Sign up</Link>
+                        Don't have an account? <Link style={{marginLeft: "8px"}} to="/signup"> Sign up</Link>
                     </div>
                 </Col>
             </Row>

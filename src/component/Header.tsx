@@ -1,10 +1,10 @@
 
 import React from 'react'
-import {DropdownItem, DropdownMenu, DropdownToggle, Nav, Navbar, NavbarBrand, UncontrolledDropdown} from 'reactstrap'
+import {DropdownItem, DropdownMenu, DropdownToggle, Nav, Navbar, NavbarBrand, NavItem, NavLink, UncontrolledDropdown} from 'reactstrap'
 import { useRecoilValue } from 'recoil'
 import { isLoggedInState, } from '../store'
 import { FcMenu } from "react-icons/fc";
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 
 interface Props {
     logOut: () => void
@@ -12,7 +12,7 @@ interface Props {
 
 const Header = ({logOut}: Props) => {
     const loggedIn = useRecoilValue(isLoggedInState)
-
+    const location = useLocation()
     return (
         <Navbar className="header" fixed="top">
             <NavbarBrand>
@@ -22,7 +22,8 @@ const Header = ({logOut}: Props) => {
                 </>
             </NavbarBrand>
             <Nav>
-                {loggedIn && <UncontrolledDropdown nav inNavbar>
+                {loggedIn 
+                ? <UncontrolledDropdown nav inNavbar>
                     <DropdownToggle nav>
                         <FcMenu />
                     </DropdownToggle>
@@ -40,7 +41,15 @@ const Header = ({logOut}: Props) => {
                         Logout
                     </DropdownItem>
                     </DropdownMenu>
-                </UncontrolledDropdown>}
+                </UncontrolledDropdown> 
+                : 
+                <>
+                {!location.pathname.includes("about") ? <NavItem>
+                    <NavLink tag={Link} to="/about">About</NavLink>
+                </NavItem> : <NavItem>
+                    <NavLink tag={Link} to="/login">Login</NavLink>
+                </NavItem>}
+                </>}
             </Nav>
         </Navbar>
     )
