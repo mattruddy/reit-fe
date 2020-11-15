@@ -1,13 +1,48 @@
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
+  font-family: "Ivar Display", "Source Sans Pro", "Helvetica Neue", Helvetica,
+    Arial, sans-serif !important;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  color: #22262a !important;
+  background: #f6f8f9 !important;
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+.header {
+  background: #fff;
+  border-bottom: 1px solid #e7e9e9;
+}
+
+.navbar-brand {
+  font-size: 1rem !important;
+}
+
+.navbar-brand img {
+  margin-right: 5px;
+}
+
+.btn-secondary {
+  color: black !important;
+  background-color: inherit !important;
+  border: none !important;
+}
+
+.AuthButton {
+  border: 1px solid #ced4da !important;
+}
+
+.card {
+  -webkit-box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.02),
+    0 2px 8px rgba(0, 0, 0, 0.08) !important;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.02), 0 2px 8px rgba(0, 0, 0, 0.08) !important;
+}
+
+.AuthFooter {
+  padding: 16px;
+  display: flex;
+  justify-content: center;
+}
+
+th {
+  border-top: none !important;
 }
