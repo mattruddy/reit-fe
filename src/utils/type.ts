@@ -9,6 +9,7 @@ export interface Account {
     balances: Balance
     mask: string 
     name: string
+    subtype: string
 }
 
 interface Investor {

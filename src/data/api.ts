@@ -55,18 +55,6 @@ export const getAccount = async (token: string) => {
     return await resp.data
 }
 
-export const createInvestor = async (token: string, amount: number) => {
-    const resp = await axios.post(BASE + '/secure/investor',{
-        amount: amount
-    }, {
-        headers: {
-            Authorization: `Bearer ${token}`,
-            'Content-Type': 'application/json'
-        }
-    })
-    return await resp.data
-}
-
 export const transferFunds = async (token: string, accountId: string, amount: number) => {
     const resp = await axios.post(BASE + '/secure/transfer', {
         accountId: accountId,
