@@ -32,15 +32,9 @@ const Home = () => {
 
 
                         <Table>
-                            <th>
-                                <tr>Earnings</tr>
-                            </th>
-                            <th>
-                                <tr>YTD</tr>
-                            </th>                 
-                            <th>
-                                <tr>All Time</tr>
-                            </th>
+                            <th>Earnings</th>
+                            <th>YTD</th>
+                            <th>All Time</th>
                             <tbody>
                                 <tr>
                                     <td>Dividends</td>
@@ -64,13 +58,6 @@ const Home = () => {
                     </div>
                 </Col>
             </Row>
-            {/* <Row>
-                {accounts && accounts.map((account, i) => (
-                <Col xs="4" key={i}>
-                    <AccountCard account={account} />
-               </Col>
-                ))}
-            </Row> */}
         </Container>
     )
 }

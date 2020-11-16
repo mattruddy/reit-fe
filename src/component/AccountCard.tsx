@@ -1,5 +1,8 @@
 import React from 'react'
-import { Card, CardBody, CardHeader } from 'reactstrap'
+import { Button, Card, CardBody, CardHeader } from 'reactstrap'
+import { useRecoilValue } from 'recoil'
+import { transferFunds } from '../data/api'
+import { tokenState } from '../store'
 import { Account } from '../utils/type'
 import { currencyFormat } from '../utils/utils'
 
@@ -8,6 +11,8 @@ interface Props {
 }
 
 const AccountCard = ({account}: Props) => {
+    const token = useRecoilValue(tokenState)
+
     return (
         <Card>
             <CardHeader>
@@ -15,6 +20,10 @@ const AccountCard = ({account}: Props) => {
             </CardHeader>
             <CardBody>
                 {currencyFormat.format(account.balances.available)}
+                <Button onClick={(e) => {
+                    e.preventDefault()
+                    transferFunds(token!, account.accountId, 100)
+                }}>Choose</Button>
             </CardBody>
         </Card>
     )

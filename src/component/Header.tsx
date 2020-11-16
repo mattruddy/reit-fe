@@ -32,7 +32,7 @@ const Header = ({logOut}: Props) => {
                         Home
                     </DropdownItem>
                     <DropdownItem tag={Link} to="/settings">
-                        Settings
+                        Transfer
                     </DropdownItem>
                     <DropdownItem tag={Link} to="/about">
                         About
