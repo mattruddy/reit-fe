@@ -13,7 +13,13 @@ const Home = () => {
     const getPendingAmount = (trans: Transaction[]): number => {
         return trans
             .filter(t => t.transferStatus === "PENDING")
-            .flatMap(t => t.amount)
+            .flatMap(t => { 
+                if (t.transactionType === "CREDIT") {
+                    return t.amount * -1
+                } else {
+                    return t.amount
+                }
+            })
             .reduce((l, r) => l + r)
     }
 
@@ -21,9 +27,14 @@ const Home = () => {
         <Container>
             <Row>
                 <Col>
-                    <div style={{padding: "16px"}}>
-                        <h1><b>{currencyFormat.format(investor ? investor.amount : 0)}</b></h1> 
-                        {transactions && transactions.find(t => t.transferStatus === "PENDING") && <span><i>Pending: {currencyFormat.format(investor!.amount + getPendingAmount(transactions))}</i></span> }
+                    <div style={{padding: "16px", display: "flex", justifyContent: "space-between"}}>
+                        <div>
+                            <h1><b>{currencyFormat.format(investor ? investor.amount : 0)}</b></h1> 
+                            {transactions && transactions.find(t => t.transferStatus === "PENDING") && <span><i>Pending: {currencyFormat.format(investor!.amount + getPendingAmount(transactions))}</i></span> }
+                        </div>
+                        <div>
+                            {investor?.trossAccount && <><b>Account:</b> <i>{investor.trossAccount}</i></>}
+                        </div>
                     </div>
                 </Col>
             </Row>
