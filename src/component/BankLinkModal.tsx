@@ -1,7 +1,7 @@
 import React, { FormEvent, useEffect, useState } from 'react'
 import { Button, Col, Form, FormGroup, FormText, Input, Label, Modal, ModalBody, ModalFooter } from 'reactstrap'
 import { useRecoilValue } from 'recoil'
-import { getBankFromRn } from '../data/api'
+import { getBankFromRn, linkBankAccount } from '../data/api'
 import { linkedTokenState, tokenState } from '../store'
 import { bankType } from '../utils/type'
 
@@ -35,16 +35,23 @@ const BankLinkModal = ({isOpen, toggle}: Props) => {
     const handleSubmit = (e: FormEvent) => {
         e.preventDefault()
         if (bankType && rNumber && bank && aNumber && confirmNumber && aNumber === confirmNumber) {
-            console.log(bankType)
-            console.log(rNumber)
-            console.log(aNumber)
-            console.log(confirmNumber)
-            console.log(bank)
+            console.log('here')
+            linkBankAccount(token!, bankType, bank, rNumber, aNumber)
+            onClose()
         }
     }
 
+    const onClose = () => {
+        setANumber(undefined)
+        setBank(undefined)
+        setRNumber(undefined)
+        setConfirmNumber(undefined)
+        setBankType(undefined)
+        toggle()
+    }
+
     return (
-        <Modal isOpen={true}>
+        <Modal isOpen={isOpen}>
             <Form onSubmit={handleSubmit}>
             <ModalBody>
             <FormGroup>
@@ -82,7 +89,7 @@ const BankLinkModal = ({isOpen, toggle}: Props) => {
                 </FormGroup>
             </ModalBody>
             <ModalFooter>
-                <Button onClick={toggle}>Cancel</Button>
+                <Button onClick={onClose}>Cancel</Button>
                 <Button type="submit">{"Agree & Link"}</Button>
             </ModalFooter>
             </Form>

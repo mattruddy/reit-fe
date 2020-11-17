@@ -1,6 +1,7 @@
 import axios from 'axios'
 
 import {BASE} from '../utils/const'
+import { bankType } from '../utils/type'
 
 export const signup = async (username: string, password: string) => {
     try {
@@ -84,4 +85,19 @@ export const getBankFromRn = async (routerNumber: string) => {
         }
     })
     return resp.data
+}
+
+export const linkBankAccount = async (token: string, bankType: bankType, bankName: string,
+        rNumber: string, aNumber: string) => {
+    await axios.post(BASE + "/secure/account", {
+        bankType: bankType,
+        bankName: bankName,
+        accountNumber: aNumber,
+        routingNumber: rNumber
+    }, {
+        headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json'
+        }
+    })
 }
