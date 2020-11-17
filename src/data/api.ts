@@ -1,5 +1,6 @@
 import axios from 'axios'
-import { BASE } from '../utils/const'
+
+import {BASE} from '../utils/const'
 
 export const signup = async (username: string, password: string) => {
     try {
@@ -60,6 +61,15 @@ export const transferFunds = async (token: string, accountId: string, amount: nu
         accountId: accountId,
         amount: amount
     }, {
+        headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json'
+        }
+    })
+}
+
+export const connect = async (token: string) => {
+    await axios.post(BASE + "/payment/connect", {}, {
         headers: {
             Authorization: `Bearer ${token}`,
             'Content-Type': 'application/json'

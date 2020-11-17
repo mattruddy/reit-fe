@@ -1,7 +1,7 @@
 import React, { useCallback } from 'react'
-import { Col, Container, Row } from 'reactstrap'
+import { Button, Col, Container, Row } from 'reactstrap'
 import { useRecoilValue } from 'recoil'
-import { createLinkedTokenAccess } from '../data/api'
+import { connect, createLinkedTokenAccess } from '../data/api'
 import { linkedTokenState, profileState, tokenState } from '../store'
 import { PlaidLink } from 'react-plaid-link';
 import AccountCard from '../component/AccountCard'
@@ -33,6 +33,13 @@ const Setting = () => {
                     <AccountCard key={i} account={a} />
                 </Col>
             ))}
+        </Row>
+        <Row>
+            <Col>
+            <Button onClick={(e) => {
+                e.preventDefault()
+                connect(token!)
+            }}>Connect</Button></Col>
         </Row>
     </Container>
 }
