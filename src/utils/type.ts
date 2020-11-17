@@ -12,14 +12,14 @@ export interface Account {
     subtype: string
 }
 
-interface Investor {
+export interface Investor {
     accountNumber: string 
     memberDate: Date
     amount: number 
     dividends: Dividends[]
 }
 
-interface Dividends {
+export interface Dividends {
     id: number 
     amount: number 
     createdAt: Date
@@ -35,3 +35,5 @@ export interface AuthResp {
     status: "success" | "error"
     data: string
 }
+
+export type bankType = "SAVING" | "CHECKING"

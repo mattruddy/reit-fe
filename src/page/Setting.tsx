@@ -1,46 +1,25 @@
-import React, { useCallback } from 'react'
+import React, { useCallback, useState } from 'react'
 import { Button, Col, Container, Row } from 'reactstrap'
-import { useRecoilValue } from 'recoil'
-import { connect, createLinkedTokenAccess } from '../data/api'
-import { linkedTokenState, profileState, tokenState } from '../store'
-import { PlaidLink } from 'react-plaid-link';
-import AccountCard from '../component/AccountCard'
+import BankLinkModal from '../component/BankLinkModal'
 
 const Setting = () => {
-    const token = useRecoilValue(tokenState)
-    const linkedToken = useRecoilValue(linkedTokenState)
-    const profile = useRecoilValue(profileState)
+    const [isOpen, setIsOpen] = useState<boolean>(false)
 
-    const onSuccess = useCallback((accessToken: any, metadata: any) => {
-        console.log("her")
-        console.log(metadata)
-        createLinkedTokenAccess(token!, accessToken)
-    }, [token])
+    const toggle = () => setIsOpen(!isOpen)
       
     return <Container>
         <Row>
             <Col>
-        {linkedToken &&
-            <PlaidLink token={linkedToken} onSuccess={onSuccess}>
-                Add Bank Account
-            </PlaidLink>}
+                <h1>Link Bank Account to easily transfer money</h1>
             </Col>
         </Row>
         <div className="space" />
-        <Row>      
-            {profile && profile.account.map((a, i) => (
-                <Col xs="12" md="6">
-                    <AccountCard key={i} account={a} />
-                </Col>
-            ))}
-        </Row>
         <Row>
             <Col>
-            <Button onClick={(e) => {
-                e.preventDefault()
-                connect(token!)
-            }}>Connect</Button></Col>
+            <Button onClick={toggle}>Link Bank Account</Button>
+            </Col>
         </Row>
+        <BankLinkModal isOpen={isOpen} toggle={toggle} />
     </Container>
 }
 

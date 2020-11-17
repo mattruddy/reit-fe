@@ -31,8 +31,8 @@ function App() {
   useEffect(() => {
     if (token) {
       ;(async () => {
-        const resp = await getLinkedToken(token)
-        setLinkedToken(resp)
+        // const resp = await getLinkedToken(token)
+        // setLinkedToken(resp)
         try {
           const resp = await getAccount(token) as Profile
           setProfile(resp)

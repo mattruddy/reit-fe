@@ -76,3 +76,12 @@ export const connect = async (token: string) => {
         }
     })
 }
+
+export const getBankFromRn = async (routerNumber: string) => {
+    const resp = await axios.get(`https://www.routingnumbers.info/api/name.json?rn=${routerNumber}`, {
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+    return resp.data
+}
