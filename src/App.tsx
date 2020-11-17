@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
-import {getAccount, getLinkedToken} from './data/api'
+import {getAccount} from './data/api'
 import { useRecoilState, useSetRecoilState } from 'recoil';
-import { isLoggedInState, linkedTokenState, tokenState, profileState } from './store';
+import { dividendState, emailState, investorState, isLoggedInState, linkedTokenState, tokenState, transactionState } from './store';
 import { AUTH_TOKEN } from './utils/const';
 import { BrowserRouter, Redirect, Route, Switch } from 'react-router-dom'
 import Login from './page/Login';
@@ -16,7 +16,10 @@ function App() {
   const [token, setToken] = useRecoilState(tokenState)
   const [loggedIn, setLoggedIn] = useRecoilState(isLoggedInState)
   const setLinkedToken = useSetRecoilState(linkedTokenState)
-  const setProfile = useSetRecoilState(profileState)
+  const setEmail = useSetRecoilState(emailState)
+  const setTransactions = useSetRecoilState(transactionState)
+  const setDividends = useSetRecoilState(dividendState)
+  const setInvestor = useSetRecoilState(investorState)
 
   useEffect(() => {
     const storedToken = localStorage.getItem(AUTH_TOKEN)
@@ -35,19 +38,27 @@ function App() {
         // setLinkedToken(resp)
         try {
           const resp = await getAccount(token) as Profile
-          setProfile(resp)
+          setEmail(resp.email)
+          if (resp.investor) {
+            setInvestor(resp.investor)
+            setDividends(resp.investor.dividends)
+            setTransactions(resp.investor.transactions)
+          }
         } catch (error) {
         }
       })()
     }
-  }, [token, setLinkedToken, setProfile])
+  }, [setDividends, setEmail, setInvestor, setTransactions, token])
 
   const logout = () => {
     localStorage.removeItem(AUTH_TOKEN)
     setToken(undefined)
     setLoggedIn(false)
     setLinkedToken(undefined)
-    setProfile(undefined)
+    setInvestor(undefined)
+    setDividends(undefined)
+    setTransactions(undefined)
+    setEmail(undefined)
   }
 
   return (

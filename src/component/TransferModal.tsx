@@ -1,21 +1,45 @@
-import React, { FormEvent, useState } from 'react'
+import React, { FormEvent, useEffect, useState } from 'react'
 import { Button, Form, FormGroup, FormText, Input, InputGroup, InputGroupAddon, InputGroupText, Label, Modal, ModalBody, ModalFooter, ModalHeader } from 'reactstrap'
-import { useRecoilValue } from 'recoil'
+import { useRecoilState, useRecoilValue } from 'recoil'
 import { transferFunds } from '../data/api'
-import { tokenState } from '../store'
-import { Account } from '../utils/type'
-import { currencyFormat } from '../utils/utils'
+import { investorState, tokenState, transactionState } from '../store'
+import { currencyFormat, dateFormat } from '../utils/utils'
 
 interface Props {
     isOpen: boolean 
     toggle: () => void
-    account?: Account 
 }
 
-const TransferModal = ({isOpen, toggle, account}: Props) => {
+interface AccountOption {
+    display: string 
+    value: string
+}
+
+const TransferModal = ({isOpen, toggle}: Props) => {
     const token = useRecoilValue(tokenState)
-    const [amount, setAmount] = useState<number>()
-    const [confAmount, setConfAmount] = useState<number>()
+    const [investor, setInvestor] = useRecoilState(investorState)
+    const [transactions, setTransactions] = useRecoilState(transactionState)
+    const [transferDate, setTransferDate] = useState<string>(dateFormat(new Date()))
+    const [amount, setAmount] = useState<string>()
+    const [confAmount, setConfAmount] = useState<string>()
+    const [options,setOptions] = useState<AccountOption[]>()
+    const [to, setTo] = useState<string>()
+    const [from, setFrom] = useState<string>()
+
+    useEffect(() => {
+        if (investor) {
+            setOptions([
+                {
+                    display: `xxxx${investor.lastFourAccountNumber} - ${investor.bankName}`,
+                    value: investor.lastFourAccountNumber
+                } as AccountOption,
+                {
+                    display: `${investor.trossAccount} - Tross Account`,
+                    value: investor.trossAccount
+                } as AccountOption
+            ])
+        }
+    }, [investor])
 
     const onCancel = () => {
         setAmount(undefined)
@@ -23,11 +47,15 @@ const TransferModal = ({isOpen, toggle, account}: Props) => {
         toggle()
     }
 
-    const onSubmit = (e: FormEvent) => {
+    const onSubmit = async (e: FormEvent) => {
         e.preventDefault()
-        if (token && account && amount !== undefined && amount === confAmount 
-            && amount <= account.balances.available) {
-                transferFunds(token, account.accountId, amount)
+        if (token && amount !== undefined && amount === confAmount && transferDate && to && from) {
+                const resp = await transferFunds(token, transferDate, Number(amount), to, from)
+                if (transactions) {
+                    setTransactions([resp, ...transactions])
+                } else {
+                    setTransactions([resp])
+                }
                 onCancel()
         }
     }
@@ -36,16 +64,40 @@ const TransferModal = ({isOpen, toggle, account}: Props) => {
     <Modal isOpen={isOpen}>
         <Form onSubmit={onSubmit}>
         <ModalHeader>
-            {account && account.name}
+            <h4>Transfer money</h4>
         </ModalHeader>
         <ModalBody>
+            <FormGroup>
+                <Label>From</Label>
+                <Input value={from} type="select" onChange={(e) => setFrom(e.target.value)}>
+                    <option disabled selected>Choose From Account</option>
+                    {options?.map((opt, i) => (
+                        <option value={opt.value} key={i}>{opt.display}</option>
+                    ))}
+                </Input>
+            </FormGroup>
+            <FormGroup>
+                <Label>To</Label>
+                <Input value={to} type="select" onChange={(e) => setTo(e.target.value)}>
+                    <option disabled selected>Choose To Account</option>
+                    {options?.map((opt, i) => (
+                        <option value={opt.value} key={i}>{opt.display}</option>
+                    ))}
+                </Input>
+            </FormGroup>
+           <FormGroup>
+                    <Label>Date</Label>
+                    <InputGroup>
+                        <Input type="date" value={transferDate} onChange={(e) => setTransferDate(e.target.value)} />
+                    </InputGroup>
+                </FormGroup>
                 <FormGroup>
-                    <Label>Amount to Transfer</Label>
+                    <Label>Amount</Label>
                     <InputGroup>
                         <InputGroupAddon addonType="prepend">
                             <InputGroupText>$</InputGroupText>
                         </InputGroupAddon>
-                        <Input type="number" value={amount} onChange={(e) => setAmount(Number(e.target.value))} />
+                        <Input type="number" value={amount} min={1} max={30000} onChange={(e) => setAmount(e.target.value)} />
                     </InputGroup>
                 </FormGroup>
                 <FormGroup>
@@ -54,20 +106,18 @@ const TransferModal = ({isOpen, toggle, account}: Props) => {
                         <InputGroupAddon addonType="prepend">
                             <InputGroupText>$</InputGroupText>
                         </InputGroupAddon>
-                        <Input type="number" value={confAmount} onChange={(e) => setConfAmount(Number(e.target.value))} />
+                        <Input value={confAmount} min={1} max={30000} onChange={(e) => {setConfAmount(e.target.value)}} />
                     </InputGroup>
                 </FormGroup>
                 <FormGroup>
-                    { account && amount !== undefined && amount > account.balances.available && <FormText color="danger">Not Enough Money Available</FormText> }
-                    { account && amount !== undefined && amount < account.balances.available 
-                        && amount === confAmount &&  <FormText ><b>{currencyFormat.format(amount)} will be transfered to you Tross Account</b></FormText> }
+                    {amount && confAmount && amount === confAmount && <FormText>By clicking Transfer you are confirming that {<b>{currencyFormat.format(Number(amount))}</b>} will be transferred to your Tross account</FormText>}
                 </FormGroup>
         </ModalBody>
         <ModalFooter>
             <Button onClick={onCancel}>Cancel</Button>
             <Button type="submit" disabled={amount === undefined 
                 || confAmount === undefined
-                || amount === 0 
+                || Number(amount) === 0 
                 || confAmount !== amount}>Transfer</Button>
         </ModalFooter>
         </Form>

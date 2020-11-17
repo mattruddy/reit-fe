@@ -1,8 +1,8 @@
 import React, { FormEvent, useEffect, useState } from 'react'
-import { Button, Col, Form, FormGroup, FormText, Input, Label, Modal, ModalBody, ModalFooter } from 'reactstrap'
-import { useRecoilValue } from 'recoil'
+import { Button, Form, FormGroup, FormText, Input, Label, Modal, ModalBody, ModalFooter } from 'reactstrap'
+import { useRecoilValue, useSetRecoilState } from 'recoil'
 import { getBankFromRn, linkBankAccount } from '../data/api'
-import { linkedTokenState, tokenState } from '../store'
+import { investorState, tokenState } from '../store'
 import { bankType } from '../utils/type'
 
 interface Props {
@@ -12,6 +12,7 @@ interface Props {
 
 const BankLinkModal = ({isOpen, toggle}: Props) => {
     const token = useRecoilValue(tokenState)
+    const setInvestor = useSetRecoilState(investorState)
     const [rNumber, setRNumber] = useState<string>()
     const [bank, setBank] = useState<string>()
     const [bankType, setBankType] = useState<bankType>()
@@ -32,11 +33,11 @@ const BankLinkModal = ({isOpen, toggle}: Props) => {
     }, [rNumber])
 
 
-    const handleSubmit = (e: FormEvent) => {
+    const handleSubmit = async (e: FormEvent) => {
         e.preventDefault()
         if (bankType && rNumber && bank && aNumber && confirmNumber && aNumber === confirmNumber) {
-            console.log('here')
-            linkBankAccount(token!, bankType, bank, rNumber, aNumber)
+            const resp = await linkBankAccount(token!, bankType, bank, rNumber, aNumber)
+            setInvestor(resp)
             onClose()
         }
     }

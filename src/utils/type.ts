@@ -1,6 +1,5 @@
 export interface Profile {
     email: string 
-    account: Account[]
     investor: Investor
 }
 
@@ -13,16 +12,28 @@ export interface Account {
 }
 
 export interface Investor {
-    accountNumber: string 
     memberDate: Date
     amount: number 
-    dividends: Dividends[]
+    bankName: string 
+    bankType: bankType
+    lastFourAccountNumber: string
+    dividends: Dividend[]
+    transactions: Transaction[]
+    trossAccount: string
 }
 
-export interface Dividends {
+export interface Dividend {
     id: number 
     amount: number 
     createdAt: Date
+}
+
+export interface Transaction {
+    id: number 
+    amount: number 
+    createdAt: Date 
+    transferStatus: transferStatus
+    transactionType: transactionType
 }
 
 export interface Balance {
@@ -37,3 +48,7 @@ export interface AuthResp {
 }
 
 export type bankType = "SAVING" | "CHECKING"
+
+export type transferStatus = "PENDING" | "COMPLETE" | "DENIED"
+
+export type transactionType = "CREDIT" | "DEBIT"

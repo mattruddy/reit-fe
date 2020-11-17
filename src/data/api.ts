@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 import {BASE} from '../utils/const'
-import { bankType } from '../utils/type'
+import { bankType, Investor, Transaction } from '../utils/type'
 
 export const signup = async (username: string, password: string) => {
     try {
@@ -57,16 +57,20 @@ export const getAccount = async (token: string) => {
     return await resp.data
 }
 
-export const transferFunds = async (token: string, accountId: string, amount: number) => {
+export const transferFunds = async (token: string, transferDate: string, amount: number,
+    to: string, from: string) => {
     const resp = await axios.post(BASE + '/secure/transfer', {
-        accountId: accountId,
-        amount: amount
+        transferDate: transferDate,
+        amount: amount,
+        to: to,
+        from: from
     }, {
         headers: {
             Authorization: `Bearer ${token}`,
             'Content-Type': 'application/json'
         }
     })
+    return resp.data as Transaction
 }
 
 export const connect = async (token: string) => {
@@ -89,7 +93,7 @@ export const getBankFromRn = async (routerNumber: string) => {
 
 export const linkBankAccount = async (token: string, bankType: bankType, bankName: string,
         rNumber: string, aNumber: string) => {
-    await axios.post(BASE + "/secure/account", {
+    const resp = await axios.post(BASE + "/secure/account", {
         bankType: bankType,
         bankName: bankName,
         accountNumber: aNumber,
@@ -100,4 +104,5 @@ export const linkBankAccount = async (token: string, bankType: bankType, bankNam
             'Content-Type': 'application/json'
         }
     })
+    return resp.data as Investor
 }
