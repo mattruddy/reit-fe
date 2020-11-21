@@ -9,3 +9,7 @@ export const currencyFormat = new Intl.NumberFormat('en-US', {
 export const dateFormat = (date: Date): string => {
   return moment(date).format("yyyy-MM-DD")
 }
+
+export const isNumeric = (s: any): boolean => {
+  return !isNaN(s)
+}

@@ -52,9 +52,13 @@ const Home = () => {
                         <Card>
                             <CardBody>
                         <Table>
-                            <th>Earnings</th>
-                            <th>YTD</th>
-                            <th>All Time</th>
+                            <thead>
+                                <tr>
+                                    <th>Earnings</th>
+                                    <th>YTD</th>
+                                    <th>All Time</th> 
+                                </tr>                               
+                            </thead>
                             <tbody>
                                 <tr>
                                     <td>Dividends</td>
@@ -90,10 +94,14 @@ const Home = () => {
                     <Card>
                         <CardBody>
                             <Table>
-                                <th>Amount</th>
-                                <th></th>
-                                <th>Status</th>
-                                <th>Date</th>
+                                <thead>
+                                    <tr>
+                                        <th>Amount</th>
+                                        <th></th>
+                                        <th>Status</th>
+                                        <th>Date</th>
+                                    </tr>
+                                </thead>
                                 <tbody>
                                     {transactions && transactions.map((trans, i) => (
                                         <tr key={i}>

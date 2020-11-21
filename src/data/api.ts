@@ -1,5 +1,4 @@
 import axios from 'axios'
-import { resolve } from 'dns'
 
 import {BASE} from '../utils/const'
 import { bankType, Investor, Transaction } from '../utils/type'

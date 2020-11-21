@@ -1,5 +1,5 @@
 import { atom } from "recoil"
-import { Dividend, Investor, Profile, Transaction } from "../utils/type"
+import { Dividend, Investor, Transaction } from "../utils/type"
 
 export const tokenState = atom({
     key: "token",

@@ -3,7 +3,7 @@ import { Button, Form, FormGroup, FormText, Input, InputGroup, InputGroupAddon, 
 import { useRecoilState, useRecoilValue } from 'recoil'
 import { transferFunds } from '../data/api'
 import { investorState, tokenState, transactionState } from '../store'
-import { currencyFormat, dateFormat } from '../utils/utils'
+import { currencyFormat, dateFormat, isNumeric } from '../utils/utils'
 
 interface Props {
     isOpen: boolean 
@@ -17,7 +17,7 @@ interface AccountOption {
 
 const TransferModal = ({isOpen, toggle}: Props) => {
     const token = useRecoilValue(tokenState)
-    const [investor, setInvestor] = useRecoilState(investorState)
+    const investor = useRecoilValue(investorState)
     const [transactions, setTransactions] = useRecoilState(transactionState)
     const [transferDate, setTransferDate] = useState<string>(dateFormat(new Date()))
     const [amount, setAmount] = useState<string>()
@@ -64,7 +64,7 @@ const TransferModal = ({isOpen, toggle}: Props) => {
     <Modal isOpen={isOpen}>
         <Form onSubmit={onSubmit}>
         <ModalHeader>
-            <h4>Transfer money</h4>
+            Transfer money
         </ModalHeader>
         <ModalBody>
             <FormGroup>
@@ -97,7 +97,11 @@ const TransferModal = ({isOpen, toggle}: Props) => {
                         <InputGroupAddon addonType="prepend">
                             <InputGroupText>$</InputGroupText>
                         </InputGroupAddon>
-                        <Input type="number" value={amount} min={1} max={30000} onChange={(e) => setAmount(e.target.value)} />
+                        <Input value={amount} onChange={(e) => {
+                            if (isNumeric(e.target.value)) {
+                                setAmount(e.target.value)}
+                            }
+                        } />
                     </InputGroup>
                 </FormGroup>
                 <FormGroup>
@@ -106,7 +110,11 @@ const TransferModal = ({isOpen, toggle}: Props) => {
                         <InputGroupAddon addonType="prepend">
                             <InputGroupText>$</InputGroupText>
                         </InputGroupAddon>
-                        <Input value={confAmount} min={1} max={30000} onChange={(e) => {setConfAmount(e.target.value)}} />
+                        <Input value={confAmount} onChange={(e) => {
+                            if (isNumeric(e.target.value)) {
+                                setConfAmount(e.target.value)
+                            }
+                        }} />
                     </InputGroup>
                 </FormGroup>
                 <FormGroup>
