@@ -9,8 +9,8 @@ interface Props {
 }
 
 const AuthForm = ({onSubmit, authType}: Props) => {
-    const [email, setEmail] = useState<string>()
-    const [password, setPassword] = useState<string>()
+    const [email, setEmail] = useState<string>('')
+    const [password, setPassword] = useState<string>('')
     const [error, setError] = useState<string>()
 
     const handleSubmit = async (e: FormEvent) => {
@@ -18,8 +18,8 @@ const AuthForm = ({onSubmit, authType}: Props) => {
         if (email && password) {
             const resp = await onSubmit(email!, password!)
             if (resp.status === "success") {
-                setEmail(undefined)
-                setPassword(undefined)
+                setEmail('')
+                setPassword('')
                 setError(undefined)
             } else {
                 setError(resp.data)

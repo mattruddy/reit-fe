@@ -4,6 +4,7 @@ import { useRecoilValue, useSetRecoilState } from 'recoil'
 import { removeBankAccount } from '../data/api'
 import { investorState, tokenState } from '../store'
 import { Investor } from '../utils/type'
+import RemoveBankModal from './RemoveBankModal'
 import TransferModal from './TransferModal'
 
 interface Props {
@@ -13,8 +14,15 @@ interface Props {
 const AccountCard = ({investor}: Props) => {
     const token = useRecoilValue(tokenState)
     const setInvestor = useSetRecoilState(investorState)
-    const [isOpen, setIsOpen] = useState<boolean>(false)
-    const toggle = () => setIsOpen(!isOpen)
+    const [isOpenTrans, setIsOpenTrans] = useState<boolean>(false)
+    const [isOpenRemove, setIsOpenRemove] = useState<boolean>(false)
+    const toggleTrans = () => setIsOpenTrans(!isOpenTrans)
+    const toggleRemove = () => setIsOpenRemove(!isOpenRemove)
+
+    const handleRemoveBank = async () => {
+        const resp = await removeBankAccount(token!)
+        setInvestor(resp)
+    }
 
     return (
         <>
@@ -40,15 +48,12 @@ const AccountCard = ({investor}: Props) => {
                 </CardGroup>
             </CardBody>
             <CardFooter>
-                <Button onClick={toggle}>Transfer Funds</Button>
+                <Button onClick={toggleTrans}>Transfer Funds</Button>
             </CardFooter>
         </Card>
-        <TransferModal isOpen={isOpen} toggle={toggle} />
-        <Button onClick={async(e) => {
-            e.preventDefault()
-            const resp = await removeBankAccount(token!)
-            setInvestor(resp)
-        }}>Remove Bank</Button>
+        <Button onClick={toggleRemove}>Remove Bank</Button>
+        <TransferModal isOpen={isOpenTrans} toggle={toggleTrans} />
+        <RemoveBankModal isOpen={isOpenRemove} toggle={toggleRemove} onDelete={handleRemoveBank} />
         </>
     )
 }

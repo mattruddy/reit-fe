@@ -4,6 +4,7 @@ import { useRecoilValue, useSetRecoilState } from 'recoil'
 import { getBankFromRn, linkBankAccount } from '../data/api'
 import { investorState, tokenState } from '../store'
 import { bankType } from '../utils/type'
+import { isNumeric } from '../utils/utils'
 
 interface Props {
     isOpen: boolean
@@ -13,11 +14,11 @@ interface Props {
 const BankLinkModal = ({isOpen, toggle}: Props) => {
     const token = useRecoilValue(tokenState)
     const setInvestor = useSetRecoilState(investorState)
-    const [rNumber, setRNumber] = useState<string>()
-    const [bank, setBank] = useState<string>()
+    const [rNumber, setRNumber] = useState<string>('')
+    const [bank, setBank] = useState<string>('')
     const [bankType, setBankType] = useState<bankType>()
-    const [aNumber, setANumber] = useState<string>()
-    const [confirmNumber, setConfirmNumber] = useState<string>()
+    const [aNumber, setANumber] = useState<string>('')
+    const [confirmNumber, setConfirmNumber] = useState<string>('')
 
     useEffect(() => {
         if (rNumber && rNumber?.length === 9) {
@@ -26,7 +27,7 @@ const BankLinkModal = ({isOpen, toggle}: Props) => {
                 if (resp.code === 200) {
                     setBank(resp.name)
                 } else {
-                    setBank(undefined)
+                    setBank('')
                 }
             })()
         }
@@ -43,10 +44,10 @@ const BankLinkModal = ({isOpen, toggle}: Props) => {
     }
 
     const onClose = () => {
-        setANumber(undefined)
-        setBank(undefined)
-        setRNumber(undefined)
-        setConfirmNumber(undefined)
+        setANumber('')
+        setBank('')
+        setRNumber('')
+        setConfirmNumber('')
         setBankType(undefined)
         toggle()
     }
@@ -72,16 +73,28 @@ const BankLinkModal = ({isOpen, toggle}: Props) => {
                 </FormGroup>
                 <FormGroup>
                     <Label><b>Routing Number</b></Label>
-                    <Input value={rNumber} onChange={(e) => setRNumber(e.target.value)} />
+                    <Input value={rNumber} onChange={(e) => {
+                        if (isNumeric(e.target.value) && e.target.value.length <= 9) {
+                            setRNumber(e.target.value)}
+                        }
+                    } />
                     <FormText>{bank && bank}</FormText>
                 </FormGroup>
                 <FormGroup>
                     <Label><b>Account Number</b></Label>
-                    <Input value={aNumber} onChange={(e) => setANumber(e.target.value)} />
+                    <Input value={aNumber} onChange={(e) => {
+                        if (isNumeric(e.target.value) && e.target.value.length <= 9) {
+                            setANumber(e.target.value)}
+                        }
+                    } />
                 </FormGroup>
                 <FormGroup>
                     <Label><b>Confirm Account Number</b></Label>
-                    <Input value={confirmNumber} onChange={(e) => setConfirmNumber(e.target.value)} />
+                    <Input value={confirmNumber} onChange={(e) => {
+                        if (isNumeric(e.target.value) && e.target.value.length <= 9) {
+                            setConfirmNumber(e.target.value)}
+                        }
+                     }/>
                 </FormGroup>
                 <FormGroup>
                     <FormText>

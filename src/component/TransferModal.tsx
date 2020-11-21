@@ -20,11 +20,11 @@ const TransferModal = ({isOpen, toggle}: Props) => {
     const investor = useRecoilValue(investorState)
     const [transactions, setTransactions] = useRecoilState(transactionState)
     const [transferDate, setTransferDate] = useState<string>(dateFormat(new Date()))
-    const [amount, setAmount] = useState<string>()
-    const [confAmount, setConfAmount] = useState<string>()
+    const [amount, setAmount] = useState<string>('')
+    const [confAmount, setConfAmount] = useState<string>('')
     const [options,setOptions] = useState<AccountOption[]>()
-    const [to, setTo] = useState<string>()
-    const [from, setFrom] = useState<string>()
+    const [to, setTo] = useState<string>("")
+    const [from, setFrom] = useState<string>("")
 
     useEffect(() => {
         if (investor) {
@@ -42,8 +42,11 @@ const TransferModal = ({isOpen, toggle}: Props) => {
     }, [investor])
 
     const onCancel = () => {
-        setAmount(undefined)
-        setConfAmount(undefined)
+        setAmount('')
+        setConfAmount('')
+        setTo('')
+        setFrom('')
+        setTransferDate(dateFormat(new Date()))
         toggle()
     }
 
@@ -70,7 +73,7 @@ const TransferModal = ({isOpen, toggle}: Props) => {
             <FormGroup>
                 <Label>From</Label>
                 <Input value={from} type="select" onChange={(e) => setFrom(e.target.value)}>
-                    <option disabled selected>Choose From Account</option>
+                    <option disabled value="">Choose From Account</option>
                     {options?.map((opt, i) => (
                         <option value={opt.value} key={i}>{opt.display}</option>
                     ))}
@@ -79,7 +82,7 @@ const TransferModal = ({isOpen, toggle}: Props) => {
             <FormGroup>
                 <Label>To</Label>
                 <Input value={to} type="select" onChange={(e) => setTo(e.target.value)}>
-                    <option disabled selected>Choose To Account</option>
+                    <option disabled value="">Choose To Account</option>
                     {options?.map((opt, i) => (
                         <option value={opt.value} key={i}>{opt.display}</option>
                     ))}
@@ -88,7 +91,7 @@ const TransferModal = ({isOpen, toggle}: Props) => {
            <FormGroup>
                     <Label>Date</Label>
                     <InputGroup>
-                        <Input type="date" value={transferDate} onChange={(e) => setTransferDate(e.target.value)} />
+                        <Input type="date" min={dateFormat(new Date())} value={transferDate} onChange={(e) => setTransferDate(e.target.value)} />
                     </InputGroup>
                 </FormGroup>
                 <FormGroup>
@@ -116,6 +119,7 @@ const TransferModal = ({isOpen, toggle}: Props) => {
                             }
                         }} />
                     </InputGroup>
+                    <FormText color="danger">yoyoy</FormText>
                 </FormGroup>
                 <FormGroup>
                     {amount && confAmount && amount === confAmount && <FormText>By clicking Transfer you are confirming that {<b>{currencyFormat.format(Number(amount))}</b>} will be transferred to your Tross account</FormText>}
@@ -123,10 +127,12 @@ const TransferModal = ({isOpen, toggle}: Props) => {
         </ModalBody>
         <ModalFooter>
             <Button onClick={onCancel}>Cancel</Button>
-            <Button type="submit" disabled={amount === undefined 
-                || confAmount === undefined
+            <Button type="submit" disabled={amount === "" 
+                || confAmount === ''
                 || Number(amount) === 0 
-                || confAmount !== amount}>Transfer</Button>
+                || confAmount !== amount
+                || to === ""
+                || from === ""}>Transfer</Button>
         </ModalFooter>
         </Form>
     </Modal>
