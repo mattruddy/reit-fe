@@ -1,5 +1,8 @@
 import React, { useState } from 'react'
 import { Button, Card, CardBody, CardFooter, CardGroup, CardHeader, CardSubtitle, CardTitle } from 'reactstrap'
+import { useRecoilValue, useSetRecoilState } from 'recoil'
+import { removeBankAccount } from '../data/api'
+import { investorState, tokenState } from '../store'
 import { Investor } from '../utils/type'
 import TransferModal from './TransferModal'
 
@@ -8,6 +11,8 @@ interface Props {
 }
 
 const AccountCard = ({investor}: Props) => {
+    const token = useRecoilValue(tokenState)
+    const setInvestor = useSetRecoilState(investorState)
     const [isOpen, setIsOpen] = useState<boolean>(false)
     const toggle = () => setIsOpen(!isOpen)
 
@@ -39,6 +44,11 @@ const AccountCard = ({investor}: Props) => {
             </CardFooter>
         </Card>
         <TransferModal isOpen={isOpen} toggle={toggle} />
+        <Button onClick={async(e) => {
+            e.preventDefault()
+            const resp = await removeBankAccount(token!)
+            setInvestor(resp)
+        }}>Remove Bank</Button>
         </>
     )
 }

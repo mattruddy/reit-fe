@@ -1,4 +1,5 @@
 import axios from 'axios'
+import { resolve } from 'dns'
 
 import {BASE} from '../utils/const'
 import { bankType, Investor, Transaction } from '../utils/type'
@@ -27,26 +28,6 @@ export const login = async (username: string, password: string) => {
     }
 }
 
-export const getLinkedToken = async (token: string) => {
-    const resp = await axios.get(BASE + "/secure/linked-token", {
-        headers: {
-            Authorization: `Bearer ${token}`,
-            'Content-Type': 'application/json'
-        }
-    })
-    return resp.data.token
-}
-
-export const createLinkedTokenAccess = async (token: string, plaidToken: string) => {
-    const resp = await axios.post(BASE + `/secure/token-access/${plaidToken}`,{}, {
-        headers: {
-            Authorization: `Bearer ${token}`,
-            'Content-Type': 'application/json'
-        }
-    })
-    return resp.data
-}
-
 export const getAccount = async (token: string) => {
     const resp = await axios.get(BASE + '/secure/profile', {
         headers: {
@@ -73,15 +54,6 @@ export const transferFunds = async (token: string, transferDate: string, amount:
     return resp.data as Transaction
 }
 
-export const connect = async (token: string) => {
-    await axios.post(BASE + "/payment/connect", {}, {
-        headers: {
-            Authorization: `Bearer ${token}`,
-            'Content-Type': 'application/json'
-        }
-    })
-}
-
 export const getBankFromRn = async (routerNumber: string) => {
     const resp = await axios.get(`https://www.routingnumbers.info/api/name.json?rn=${routerNumber}`, {
         headers: {
@@ -93,12 +65,22 @@ export const getBankFromRn = async (routerNumber: string) => {
 
 export const linkBankAccount = async (token: string, bankType: bankType, bankName: string,
         rNumber: string, aNumber: string) => {
-    const resp = await axios.post(BASE + "/secure/account", {
+    const resp = await axios.put(BASE + "/secure/account", {
         bankType: bankType,
         bankName: bankName,
         accountNumber: aNumber,
         routingNumber: rNumber
     }, {
+        headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json'
+        }
+    })
+    return resp.data as Investor
+}
+
+export const removeBankAccount = async (token: string) => {
+    const resp = await axios.delete(BASE + "/secure/account", {
         headers: {
             Authorization: `Bearer ${token}`,
             'Content-Type': 'application/json'

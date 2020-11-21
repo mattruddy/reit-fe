@@ -4,7 +4,7 @@ export interface Profile {
 }
 
 export interface Account {
-    accountId: string 
+    externalAccountId: string
     balances: Balance
     mask: string 
     name: string
@@ -20,6 +20,7 @@ export interface Investor {
     dividends: Dividend[]
     transactions: Transaction[]
     trossAccount: string
+    linked: boolean
 }
 
 export interface Dividend {

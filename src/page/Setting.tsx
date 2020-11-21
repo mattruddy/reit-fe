@@ -23,7 +23,7 @@ const Setting = () => {
         <div className="space" />
         <Row>
             <Col>
-                {investor ? <AccountCard investor={investor} /> : <Button onClick={toggle}>Link Bank Account</Button> }
+                {(investor && investor.linked) ? <AccountCard investor={investor} /> : <Button onClick={toggle}>Link Bank Account</Button> }
             </Col>
         </Row>
         <BankLinkModal isOpen={isOpen} toggle={toggle} />
