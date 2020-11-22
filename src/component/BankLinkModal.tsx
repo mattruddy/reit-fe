@@ -2,7 +2,7 @@ import React, { FormEvent, useEffect, useState } from 'react'
 import { Button, Form, FormGroup, FormText, Input, Label, Modal, ModalBody, ModalFooter } from 'reactstrap'
 import { useRecoilValue, useSetRecoilState } from 'recoil'
 import { getBankFromRn, linkBankAccount } from '../data/api'
-import { investorState, tokenState } from '../store'
+import { investorState, isToastState, toastMessageState, tokenState } from '../store'
 import { bankType } from '../utils/type'
 import { isNumeric } from '../utils/utils'
 
@@ -15,10 +15,13 @@ const BankLinkModal = ({isOpen, toggle}: Props) => {
     const token = useRecoilValue(tokenState)
     const setInvestor = useSetRecoilState(investorState)
     const [rNumber, setRNumber] = useState<string>('')
+    const [rNumberError, setRNumberError] = useState<string>('')
     const [bank, setBank] = useState<string>('')
     const [bankType, setBankType] = useState<bankType>()
     const [aNumber, setANumber] = useState<string>('')
     const [confirmNumber, setConfirmNumber] = useState<string>('')
+    const setIsToast = useSetRecoilState(isToastState)
+    const setToastMessage = useSetRecoilState(toastMessageState)
 
     useEffect(() => {
         if (rNumber && rNumber?.length === 9) {
@@ -26,8 +29,10 @@ const BankLinkModal = ({isOpen, toggle}: Props) => {
                 const resp = await getBankFromRn(rNumber)
                 if (resp.code === 200) {
                     setBank(resp.name)
+                    setRNumberError('')
                 } else {
                     setBank('')
+                    setRNumberError('Invalid Routing Number')
                 }
             })()
         }
@@ -37,9 +42,14 @@ const BankLinkModal = ({isOpen, toggle}: Props) => {
     const handleSubmit = async (e: FormEvent) => {
         e.preventDefault()
         if (bankType && rNumber && bank && aNumber && confirmNumber && aNumber === confirmNumber) {
-            const resp = await linkBankAccount(token!, bankType, bank, rNumber, aNumber)
-            setInvestor(resp)
-            onClose()
+            try {
+                const resp = await linkBankAccount(token!, bankType, bank, rNumber, aNumber)
+                setInvestor(resp)
+                onClose()
+            } catch (error) {
+                setToastMessage(error.response.data.message)
+                setIsToast(true)
+            }
         }
     }
 
@@ -49,7 +59,13 @@ const BankLinkModal = ({isOpen, toggle}: Props) => {
         setRNumber('')
         setConfirmNumber('')
         setBankType(undefined)
+        setRNumberError('')
         toggle()
+    }
+
+    const valid = (): boolean => {
+        return !!(aNumber && confirmNumber && bank && bankType &&
+            aNumber === confirmNumber)
     }
 
     return (
@@ -79,11 +95,12 @@ const BankLinkModal = ({isOpen, toggle}: Props) => {
                         }
                     } />
                     <FormText>{bank && bank}</FormText>
+                <FormText color="danger">{rNumberError && rNumberError}</FormText>
                 </FormGroup>
                 <FormGroup>
                     <Label><b>Account Number</b></Label>
                     <Input value={aNumber} onChange={(e) => {
-                        if (isNumeric(e.target.value) && e.target.value.length <= 9) {
+                        if (isNumeric(e.target.value)) {
                             setANumber(e.target.value)}
                         }
                     } />
@@ -91,7 +108,7 @@ const BankLinkModal = ({isOpen, toggle}: Props) => {
                 <FormGroup>
                     <Label><b>Confirm Account Number</b></Label>
                     <Input value={confirmNumber} onChange={(e) => {
-                        if (isNumeric(e.target.value) && e.target.value.length <= 9) {
+                        if (isNumeric(e.target.value)) {
                             setConfirmNumber(e.target.value)}
                         }
                      }/>
@@ -104,7 +121,7 @@ const BankLinkModal = ({isOpen, toggle}: Props) => {
             </ModalBody>
             <ModalFooter>
                 <Button onClick={onClose}>Cancel</Button>
-                <Button type="submit">{"Agree & Link"}</Button>
+                <Button disabled={!valid()} type="submit">{"Agree & Link"}</Button>
             </ModalFooter>
             </Form>
         </Modal>

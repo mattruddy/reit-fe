@@ -6,14 +6,19 @@ export const tokenState = atom({
     default: undefined as string | undefined,
 })
 
-export const linkedTokenState = atom({
-  key: "linkedToken",
-  default: undefined as string | undefined,
-})
-
 export const isLoggedInState = atom({
   key: "isLoggedIn",
   default: undefined as undefined | boolean,
+})
+
+export const isToastState = atom({
+  key: "isToast",
+  default: false as  boolean,
+})
+
+export const toastMessageState = atom({
+  key: "toastMessage",
+  default: '' as string,
 })
 
 export const emailState = atom({

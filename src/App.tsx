@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import {getAccount} from './data/api'
 import { useRecoilState, useSetRecoilState } from 'recoil';
-import { dividendState, emailState, investorState, isLoggedInState, linkedTokenState, tokenState, transactionState } from './store';
+import { dividendState, emailState, investorState, isLoggedInState, tokenState, transactionState } from './store';
 import { AUTH_TOKEN } from './utils/const';
 import { BrowserRouter, Redirect, Route, Switch } from 'react-router-dom'
 import Login from './page/Login';
@@ -11,11 +11,12 @@ import Home from './page/Home';
 import Setting from './page/Setting';
 import { Profile } from './utils/type';
 import About from './page/About';
+import { Toast, ToastBody, ToastHeader } from 'reactstrap';
+import GlobalToast from './component/GlobalToast';
 
 function App() {
   const [token, setToken] = useRecoilState(tokenState)
   const [loggedIn, setLoggedIn] = useRecoilState(isLoggedInState)
-  const setLinkedToken = useSetRecoilState(linkedTokenState)
   const setEmail = useSetRecoilState(emailState)
   const setTransactions = useSetRecoilState(transactionState)
   const setDividends = useSetRecoilState(dividendState)
@@ -34,8 +35,6 @@ function App() {
   useEffect(() => {
     if (token) {
       ;(async () => {
-        // const resp = await getLinkedToken(token)
-        // setLinkedToken(resp)
         try {
           const resp = await getAccount(token) as Profile
           setEmail(resp.email)
@@ -54,7 +53,6 @@ function App() {
     localStorage.removeItem(AUTH_TOKEN)
     setToken(undefined)
     setLoggedIn(false)
-    setLinkedToken(undefined)
     setInvestor(undefined)
     setDividends(undefined)
     setTransactions(undefined)
@@ -81,6 +79,7 @@ function App() {
           )} exact />
           <Route path="/about" component={About} />
         </Switch>
+        <GlobalToast />
       </div> </>}
     </BrowserRouter>
   );
