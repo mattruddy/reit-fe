@@ -1,4 +1,4 @@
 export const AUTH_TOKEN = "authtoken"
-export const BASE = "http://localhost:8080"
+export const BASE = "/api"
 
 export type authType = "Sign up" | "Log in"

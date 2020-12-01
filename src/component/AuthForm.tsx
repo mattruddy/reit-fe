@@ -1,5 +1,5 @@
 import React, { FormEvent, useState } from 'react'
-import { Button, Card, CardBody, Form, FormGroup, FormText, Input, Label } from 'reactstrap'
+import { Button, Card, CardBody, Form, FormGroup, FormText, Input, Label, Spinner } from 'reactstrap'
 import { authType } from '../utils/const'
 import { AuthResp } from '../utils/type'
 
@@ -12,17 +12,23 @@ const AuthForm = ({onSubmit, authType}: Props) => {
     const [email, setEmail] = useState<string>('')
     const [password, setPassword] = useState<string>('')
     const [error, setError] = useState<string>()
+    const [isLoading, setIsLoading] = useState<boolean>(false)
 
     const handleSubmit = async (e: FormEvent) => {
         e.preventDefault()
         if (email && password) {
-            const resp = await onSubmit(email!, password!)
-            if (resp.status === "success") {
-                setEmail('')
-                setPassword('')
-                setError(undefined)
-            } else {
-                setError(resp.data)
+            try {
+                setIsLoading(true)
+                const resp = await onSubmit(email!, password!)
+                if (resp.status === "success") {
+                    setEmail('')
+                    setPassword('')
+                    setError(undefined)
+                } else {
+                    setError(resp.data)
+                }
+            } finally {
+                setIsLoading(false) 
             }
         }
     }
@@ -40,7 +46,9 @@ const AuthForm = ({onSubmit, authType}: Props) => {
                 <Input type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
             </FormGroup>
             <FormGroup>
-                <Button className="AuthButton" disabled={!email || !password} type="submit">{authType}</Button>
+                <Button className="AuthButton" disabled={!email || !password || isLoading} type="submit">
+                     {isLoading ? <Spinner /> : authType}
+                </Button>
             </FormGroup>
             <FormGroup>
                 {error && <FormText color="danger">{error}</FormText>}
